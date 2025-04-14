@@ -23,8 +23,6 @@ Assurez-vous que la classe DatabaseConnection est correctement configurée et é
 ## Code
 
 ```java
-package utils;
-
 package DAO;
 
 import utils.DatabaseConnection;
@@ -35,67 +33,66 @@ import java.util.List;
 
 public class MouvementDAO {
 
-    // 🔹 Ajouter un mouvement (ENTREE ou SORTIE) et mettre à jour le stock
+    // 🔹 Enregistre un mouvement (ENTREE ou SORTIE) et met à jour le stock du produit
     public void enregistrerMouvement(int produitId, String type, int quantite) {
-        // Définition de la requête SQL pour insérer un mouvement
+        // SQL pour insérer un nouveau mouvement
         String sql = "INSERT INTO mouvements (produit_id, type_mouvement, quantite) VALUES (?, ?, ?)";
 
-        // Bloc try-with-resources pour gérer la connexion et le PreparedStatement
-        try (Connection conn = DatabaseConnection.connect(); // Connexion à la base de données
-             PreparedStatement stmt = conn.prepareStatement(sql)) { // Préparation de la requête
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            // Définition des paramètres de la requête
-            stmt.setInt(1, produitId); // ID du produit
+            // Définition des paramètres pour l'insertion
+            stmt.setInt(1, produitId);
             stmt.setString(2, type); // Type de mouvement : "ENTREE" ou "SORTIE"
-            stmt.setInt(3, quantite); // Quantité du mouvement
+            stmt.setInt(3, quantite);
             stmt.executeUpdate(); // Exécution de l'insertion
 
             // ✅ Mise à jour du stock dans la table produits
             String updateSql = type.equalsIgnoreCase("ENTREE") ?
-                    "UPDATE produits SET quantite = quantite + ? WHERE id = ?" : // Incrémenter la quantité
-                    "UPDATE produits SET quantite = quantite - ? WHERE id = ?"; // Décrémenter la quantité
+                    "UPDATE produits SET quantite = quantite + ? WHERE id = ?" :
+                    "UPDATE produits SET quantite = quantite - ? WHERE id = ?";
 
-            // Préparation de la requête de mise à jour
             try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
-                updateStmt.setInt(1, quantite); // Définition de la quantité à ajouter ou retirer
-                updateStmt.setInt(2, produitId); // ID du produit à mettre à jour
+                // Définition des paramètres pour la mise à jour du stock
+                updateStmt.setInt(1, quantite);
+                updateStmt.setInt(2, produitId);
                 updateStmt.executeUpdate(); // Exécution de la mise à jour
             }
 
         } catch (SQLException e) {
-            e.printStackTrace(); // Gestion des exceptions SQL
+            // Gestion des erreurs SQL
+            e.printStackTrace();
         }
     }
 
-    // 🔹 Récupérer l’historique des mouvements
+    // 🔹 Récupère l’historique des mouvements enregistrés
     public List<String[]> getHistoriqueMouvements() {
-        List<String[]> liste = new ArrayList<>(); // Liste pour stocker les résultats
-
-        // Requête SQL pour récupérer l'historique des mouvements
+        List<String[]> liste = new ArrayList<>(); // Liste pour stocker l'historique
+        // SQL pour récupérer les mouvements avec les noms des produits
         String sql = "SELECT m.id, p.nom, m.type_mouvement, m.quantite, m.date_mouvement " +
-                "FROM mouvements m JOIN produits p ON m.produit_id = p.id " +
-                "ORDER BY m.date_mouvement DESC";
+                     "FROM mouvements m JOIN produits p ON m.produit_id = p.id " +
+                     "ORDER BY m.date_mouvement DESC";
 
-        // Bloc try-with-resources pour gérer la connexion, le Statement et le ResultSet
-        try (Connection conn = DatabaseConnection.connect(); // Connexion à la base de données
-             Statement stmt = conn.createStatement(); // Création d'un Statement
-             ResultSet rs = stmt.executeQuery(sql)) { // Exécution de la requête
+        try (Connection conn = DatabaseConnection.connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
-            // Parcours des résultats de la requête
+            // Parcours des résultats et ajout à la liste
             while (rs.next()) {
                 liste.add(new String[]{
                         String.valueOf(rs.getInt("id")), // ID du mouvement
                         rs.getString("nom"), // Nom du produit
                         rs.getString("type_mouvement"), // Type de mouvement
-                        String.valueOf(rs.getInt("quantite")), // Quantité du mouvement
+                        String.valueOf(rs.getInt("quantite")), // Quantité
                         rs.getString("date_mouvement") // Date du mouvement
                 });
             }
 
         } catch (SQLException e) {
-            e.printStackTrace(); // Gestion des exceptions SQL
+            // Gestion des erreurs SQL
+            e.printStackTrace();
         }
 
-        return liste; // Retourne la liste des mouvements
+        return liste; // Retourne l'historique des mouvements
     }
 }
