@@ -96,8 +96,7 @@ Lorsque l’utilisateur clique sur ce bouton (ajouterBtn.addActionListener(...))
 L’interface est construite avec Java Swing, en positionnant manuellement les composants avec la méthode setBounds(...),
 et sans gestionnaire de mise en page grâce à setLayout(null).
 
-# Classe AjouterProduitSwing
-
+# Classe AfficherProduitsSwing
 package ui;
 
 import DAO.ProduitDAO; // Import de la classe d'accès aux données des produits
@@ -114,40 +113,47 @@ public class AfficherProduitsSwing extends JFrame {
     List<String[]> tousLesProduits; //Attribut de type liste/ Liste complète des produits (non filtrée)
 // Constructeur : initialise les composants de la fenêtre
     public AfficherProduitsSwing() {
-        setTitle("Liste des produits"); // Titre de la fenêtre
-        setSize(550, 350); // Taille de la fenêtre
-        setLayout(null); // Positionnement manuel des composants
+        // Série d’instructions situées dans le constructeur
+        setTitle("Liste des produits"); // définit le titre de la fenêtre
+        setSize(550, 350); //  fixe la taille de la fenêtre
+        setLayout(null); // permet un placement manuel des composants avec setBounds(...) au lieu d’utiliser un gestionnaire automatique
 
-        JLabel searchLabel = new JLabel("Rechercher (ID ou Nom) :"); // Étiquette du champ de recherche
-        searchLabel.setBounds(20, 10, 200, 25); // Position et taille
-        add(searchLabel); // Ajout à la fenêtre
+        // Série d’instructions situées dans le constructeur
+        JLabel searchLabel = new JLabel("Rechercher (ID ou Nom) :");// Ce bloc crée une étiquette "Rechercher (ID ou Nom)" pour guider l’utilisateur.
+        searchLabel.setBounds(20, 10, 200, 25); // Il positionne cette étiquette à un endroit précis dans la fenêtre.
+        add(searchLabel); // Enfin, il ajoute cette étiquette à l’interface graphique.
 
-        searchField = new JTextField(); // Champ de saisie pour la recherche
-        searchField.setBounds(200, 10, 200, 25); // Position
-        add(searchField); // Ajout
+        // Série d’instructions situées dans le constructeur
+        searchField = new JTextField(); // Ce bloc crée un champ de saisie (JTextField) pour taper un mot-clé de recherche
+        searchField.setBounds(200, 10, 200, 25); // Il place ce champ à une position précise dans la fenêtre avec setBounds
+        add(searchField); // Il ajoute le champ de recherche à l’interface graphique
 
+        //  Bloc sert à créer et afficher un tableau de produits dans la fenêtre
         String[] colonnes = {"ID", "Nom", "Quantité", "Prix"}; // En-têtes du tableau
-        model = new DefaultTableModel(colonnes, 0); // Création du modèle vide
-        table = new JTable(model); // Création de la table avec le modèle
-        JScrollPane scroll = new JScrollPane(table); // Ajout du scroll si beaucoup de lignes
-        scroll.setBounds(20, 50, 500, 200); // Position du tableau
-        add(scroll); // Ajout à la fenêtre
+        model = new DefaultTableModel(colonnes, 0); // Crée un modèle de tableau vide (sans lignes, mais avec ces colonnes).
+        table = new JTable(model); // Crée un tableau graphique (JTable) basé sur le modèle.
+        JScrollPane scroll = new JScrollPane(table); // Entoure le tableau d’un composant de défilement pour pouvoir scroller si le tableau devient grand.
+        scroll.setBounds(20, 50, 500, 200); // Positionne la zone du tableau dans la fenêtre
+        add(scroll); // Ajoute ce composant à la fenêtre.
 
         // Récupération des produits depuis la base de données
         tousLesProduits = new ProduitDAO().getTousLesProduits();
         afficherProduits(tousLesProduits); // Affichage initial
 
-        // Mise à jour automatique en fonction de la recherche
-        searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            public void changedUpdate(javax.swing.event.DocumentEvent e) { filtrer(); }
-            public void removeUpdate(javax.swing.event.DocumentEvent e) { filtrer(); }
-            public void insertUpdate(javax.swing.event.DocumentEvent e) { filtrer(); }
-        });
+        //  Bloc permet de filtrer automatiquement la liste des produits affichés dès que l'utilisateur
+        //  tape quelque chose dans le champ de recherch
+        searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() { // On écoute les changements de texte dans searchField
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { filtrer(); } // Methode Appelé quand un changement de style est effectué (Jamais appelee dans notre cas)
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { filtrer(); } // Methode appelée quand du texte est supprimé → on met à jour l'affichage.
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { filtrer(); }}); // Methode Appelé quand du texte est ajouté
 
-        // Action lorsqu'on clique sur une ligne du tableau
-        table.getSelectionModel().addListSelectionListener(event -> {
-            if (!event.getValueIsAdjusting() && table.getSelectedRow() != -1) {
-                int row = table.getSelectedRow(); // Ligne sélectionnée
+        //  Bloc sert à ouvrir automatiquement une fenêtre de modification/suppression
+        //  lorsqu’un utilisateur clique sur une ligne du tableau.
+        table.getSelectionModel().addListSelectionListener(event -> { // On ajoute un écouteur pour détecter la sélection d’une ligne dans le tableau table
+            if (!event.getValueIsAdjusting() && table.getSelectedRow() != -1) {//  s’assurer que l’action n’est pas en cours de modification et qu’une ligne a bien été sélectionnée
+                int row = table.getSelectedRow(); // On récupère l’indice de la ligne sélectionnée.
+                // On extrait les valeurs de la ligne sélectionnée (id, nom, quantité, prix)
+                // en les convertissant si nécessaire (car elles sont récupérées comme objets).
                 int id = Integer.parseInt(table.getValueAt(row, 0).toString());
                 String nom = table.getValueAt(row, 1).toString();
                 int quantite = Integer.parseInt(table.getValueAt(row, 2).toString());
@@ -159,31 +165,29 @@ public class AfficherProduitsSwing extends JFrame {
         });
         setVisible(true); // Affiche la fenêtre
     }
-    // Méthode pour afficher tous les produits dans le tableau
+    // Méthode privee pour afficher tous les produits dans le tableau
     private void afficherProduits(List<String[]> produits) {
-        model.setRowCount(0); // Vide le tableau
-        for (String[] ligne : produits) {
-            model.addRow(ligne); // Ajoute chaque ligne
-        }
+        model.setRowCount(0); // vide toutes les lignes du tableau pour repartir à zéro.
+        for (String[] ligne : produits) { //La boucle for parcourt chaque produit et l’ajoute à la table avec model.addRow(ligne)
+            model.addRow(ligne);}
     }
 
     // Méthode pour filtrer les produits selon ce que l’utilisateur tape
     private void filtrer() {
-        String texte = searchField.getText().trim().toLowerCase(); // Texte entré par l’utilisateur
-        if (texte.isEmpty()) {
-            afficherProduits(tousLesProduits); // Si vide, on affiche tout
-            return;
+        String texte = searchField.getText().trim().toLowerCase(); // récupère le texte saisi par l’utilisateur, sans espaces, en minuscules.
+        if (texte.isEmpty()) { // si l'utilisateur n'a rien écrit,
+            afficherProduits(tousLesProduits); // Si vide, on affiche tous les produits (tousLesProduits).
+            return; // on sort de la méthode sans faire de filtrage si le champ est vide.
         }
-
         // Filtrage avec Java Streams : on garde les produits dont le nom ou l’ID contient le texte
-        List<String[]> filtres = tousLesProduits.stream()
-                .filter(p -> p[0].contains(texte) || p[1].toLowerCase().contains(texte))
-                .collect(Collectors.toList());
+        List<String[]> filtres = tousLesProduits.stream() //transforme la liste en flux de données.
+                .filter(p -> p[0].contains(texte) || p[1].toLowerCase().contains(texte)) // l’ID contient le texte saisi et le nom (en minuscules) contient le texte saisi.
+                .collect(Collectors.toList()); // rassemble les produits filtrés dans une nouvelle liste filtres
 
         afficherProduits(filtres); // Affiche la liste filtrée
     }
 }
-# Explication de la classe
-La classe AfficherProduitsSwing permet d’afficher la liste des produits enregistrés dans la base de données sous forme de tableau. Elle utilise Java Swing pour créer une interface graphique avec un champ de recherche, un tableau (JTable) et un modèle de données (DefaultTableModel). Au démarrage, la fenêtre charge tous les produits à l’aide de ProduitDAO et les affiche dans le tableau.
 
-L’utilisateur peut ensuite rechercher un produit par nom ou par ID grâce au champ de recherche. La recherche s’effectue en temps réel grâce à un écouteur (DocumentListener) qui filtre les données à chaque modification. Si l’utilisateur clique sur une ligne du tableau, une nouvelle fenêtre s’ouvre (avec la classe ModifierOuSupprimerProduit) pour modifier ou supprimer le produit sélectionné.
+
+# Explication de la classe
+La classe AfficherProduitsSwing est une interface graphique Java Swing qui permet d’afficher tous les produits enregistrés dans une base de données sous forme de tableau. Elle utilise un JTable accompagné d’un DefaultTableModel pour présenter les colonnes ID, nom, quantité et prix. L’utilisateur peut rechercher un produit en temps réel grâce à un champ de recherche (JTextField) associé à un DocumentListener, qui déclenche automatiquement un filtrage à chaque modification de texte. Les produits filtrés sont extraits de la liste complète (tousLesProduits) à l’aide des streams Java. Lorsqu’une ligne du tableau est sélectionnée, une nouvelle fenêtre ModifierOuSupprimerProduit s’ouvre avec les informations du produit sélectionné, permettant ainsi sa modification ou sa suppression. L’ensemble de l’interface est construite avec positionnement manuel (setBounds(...)) et les composants sont ajoutés à une fenêtre (JFrame) via la méthode add(...).
