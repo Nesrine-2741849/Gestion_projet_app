@@ -3,7 +3,7 @@
 La classe `MouvementDAO` gère les opérations liées aux mouvements de stock dans une base de données. Elle permet d'enregistrer de nouveaux mouvements (entrées ou sorties) et de récupérer l'historique des mouvements.
 
 ## Fonctionnalités
-  1. Enregistrement d'un mouvement
+  **1. Enregistrement d'un mouvement**
 La méthode enregistrerMouvement(int produitId, String type, int quantite) permet d'enregistrer un mouvement de stock.
 Elle insère un enregistrement dans la table mouvements :
 
@@ -11,15 +11,14 @@ String sql = "INSERT INTO mouvements (produit_id, type_mouvement, quantite) VALU
 
 Ensuite, elle met à jour la quantité du produit en fonction du type de mouvement (ENTREE ou SORTIE).
 
-  2. Récupération de l'historique des mouvements
+  **2. Récupération de l'historique des mouvements**
 La méthode getHistoriqueMouvements() récupère l'historique des mouvements en effectuant une jointure entre les tables mouvements et produits :
 
 String sql = "SELECT m.id, p.nom, m.type_mouvement, m.quantite, m.date_mouvement " +
               "FROM mouvements m JOIN produits p ON m.produit_id = p.id " +
               "ORDER BY m.date_mouvement DESC";
 ## Instructions
-Assurez-vous que la classe DatabaseConnection est correctement configurée.
-Vérifiez que les tables mouvements et produits existent dans votre base de données.
+Assurez-vous que la classe DatabaseConnection est correctement configurée et érifiez que les tables mouvements et produits existent dans votre base de données.
 
 ## Code
 
