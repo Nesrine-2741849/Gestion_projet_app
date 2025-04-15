@@ -1,5 +1,5 @@
 # Classe AjouterProduitSwing
-```java
+```
 package ui;
 
 import DAO.ProduitDAO; // Import de la classe DAO pour accéder à la base de données
@@ -82,7 +82,7 @@ public class AjouterProduitSwing extends JFrame { // La classe hérite de JFrame
         setVisible(true); // Rend la fenêtre visible
     }
 }
-
+```
 # Explication de la classe
 La classe AjouterProduitSwing permet à l’utilisateur d’ajouter un nouveau produit dans la base de données via une interface graphique.
 Elle affiche une fenêtre avec trois champs de saisie : Nom, Quantité, et Prix, ainsi qu’un bouton Ajouter.
@@ -97,6 +97,7 @@ L’interface est construite avec Java Swing, en positionnant manuellement les c
 et sans gestionnaire de mise en page grâce à setLayout(null).
 
 # Classe AfficherProduitsSwing
+```
 package ui;
 
 import DAO.ProduitDAO; // Import de la classe d'accès aux données des produits
@@ -188,12 +189,12 @@ public class AfficherProduitsSwing extends JFrame {
     }
 }
 
-
+```
 # Explication de la classe
 La classe AfficherProduitsSwing est une interface graphique Java Swing qui permet d’afficher tous les produits enregistrés dans une base de données sous forme de tableau. Elle utilise un JTable accompagné d’un DefaultTableModel pour présenter les colonnes ID, nom, quantité et prix. L’utilisateur peut rechercher un produit en temps réel grâce à un champ de recherche (JTextField) associé à un DocumentListener, qui déclenche automatiquement un filtrage à chaque modification de texte. Les produits filtrés sont extraits de la liste complète (tousLesProduits) à l’aide des streams Java. Lorsqu’une ligne du tableau est sélectionnée, une nouvelle fenêtre ModifierOuSupprimerProduit s’ouvre avec les informations du produit sélectionné, permettant ainsi sa modification ou sa suppression. L’ensemble de l’interface est construite avec positionnement manuel (setBounds(...)) et les composants sont ajoutés à une fenêtre (JFrame) via la méthode add(...).
 
 # Classe MenuPrincipal
-
+```
 package ui;
 
 // Importation des bibliothèques nécessaires
@@ -294,7 +295,7 @@ public class MenuPrincipal extends JFrame {
         new MenuPrincipal(); // Lance la fenêtre principale
     }
 }
-
+```
 # Explication de la classe
 La classe MenuPrincipal est la fenêtre principale de l’application de gestion de stock. Elle hérite de JFrame (Swing) et affiche une interface graphique avec un logo, un titre, et plusieurs boutons disposés verticalement. Chaque bouton déclenche une action spécifique : ajouter, afficher, modifier ou supprimer un produit, gérer les mouvements de stock, consulter l’historique, générer un PDF ou encore afficher des statistiques. Les couleurs pastel rendent l’interface agréable. Le bouton "Exporter PDF" utilise JasperReports pour générer un rapport en PDF à partir d’un fichier .jrxml et des données de la base. L’agencement est manuel grâce à setLayout(null) et la fenêtre est centrée avec setLocationRelativeTo(null). Le tout est structuré pour offrir une navigation claire à l’utilisateur dès le lancement de l’application via main.
 
