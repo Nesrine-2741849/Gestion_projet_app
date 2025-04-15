@@ -1,5 +1,5 @@
 # Classe AjouterProduitSwing
-'''java
+```java
 package ui;
 
 import DAO.ProduitDAO; // Import de la classe DAO pour accéder à la base de données
