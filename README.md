@@ -84,17 +84,9 @@ public class AjouterProduitSwing extends JFrame { // La classe hérite de JFrame
 }
 ```
 # Explication de la classe
-La classe AjouterProduitSwing permet à l’utilisateur d’ajouter un nouveau produit dans la base de données via une interface graphique.
-Elle affiche une fenêtre avec trois champs de saisie : Nom, Quantité, et Prix, ainsi qu’un bouton Ajouter.
-Lorsque l’utilisateur clique sur ce bouton (ajouterBtn.addActionListener(...)) :
-* Le programme vérifie que tous les champs sont remplis (isEmpty() sur les champs texte).
-* Il convertit les saisies en types numériques :
-     *Integer.parseInt(...) pour la quantité,
-     * Double.parseDouble(...) pour le prix.
-* Si les données sont valides (non négatives), elles sont transmises à la méthode ajouterProduit(...) du ProduitDAO pour les enregistrer dans la base.
-* Un message de confirmation s’affiche (JOptionPane.showMessageDialog(...)) et la fenêtre se ferme (dispose()).
-L’interface est construite avec Java Swing, en positionnant manuellement les composants avec la méthode setBounds(...),
-et sans gestionnaire de mise en page grâce à setLayout(null).
+La classe AjouterProduitSwing représente une fenêtre d’interface graphique qui permet à l’utilisateur d’ajouter un produit dans une base de données. Cette classe hérite de JFrame, une classe de la bibliothèque Swing qui sert à créer des fenêtres dans des applications Java. Le constructeur de la classe initialise la fenêtre avec un titre, une taille fixe, et un positionnement manuel des composants grâce à setLayout(null). Plusieurs éléments de formulaire sont ensuite créés : des JLabel (pour les étiquettes), des JTextField (pour saisir le nom, la quantité et le prix), et un JButton nommé “Ajouter”. Chaque composant est positionné précisément avec setBounds, puis ajouté à la fenêtre via add(...).
+
+L’élément central de cette interface est le bouton “Ajouter”. Lorsqu’on clique dessus, un ActionListener est déclenché. Ce dernier commence par récupérer les valeurs entrées dans les champs, puis vérifie que tous les champs sont remplis. Ensuite, il essaie de convertir les champs quantité et prix en types numériques (int et double). Si une erreur de format est détectée (par exemple, un texte au lieu d’un chiffre), un message d’erreur s’affiche. Si les valeurs sont valides et positives, la méthode ajouterProduit(...) de la classe ProduitDAO est appelée pour insérer les données dans la base de données. Enfin, un message de confirmation est affiché à l'utilisateur, et la fenêtre se ferme grâce à dispose(). La fenêtre est rendue visible à la fin de l’exécution avec setVisible(true).
 
 # Classe AfficherProduitsSwing
 ```
