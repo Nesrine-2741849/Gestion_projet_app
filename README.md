@@ -1,5 +1,5 @@
 # Classe ModifierOuSupprimerProduit
-
+```
 package ui;
 
 import DAO.ProduitDAO;
@@ -202,7 +202,7 @@ public class ModifierOuSupprimerProduit extends JFrame {
         setVisible(true);
     }
 }
-
+```
 # Explication de la classe ModifierOuSupprimerProduit
 Fenêtre Swing permettant de **modifier ou supprimer un produit**.
 
@@ -222,7 +222,7 @@ Fenêtre Swing permettant de **modifier ou supprimer un produit**.
 - Utilisation de `ProduitDAO` pour interaction avec la base
 
 # Classe MouvementStockSwing
-
+```
 package ui;
 
 import DAO.MouvementDAO;
@@ -340,7 +340,7 @@ public class MouvementStockSwing extends JFrame {
         }
     }
 }
-
+```
 # Explication de la classe MouvementStockSwing
 
 Interface graphique Swing pour enregistrer les **entrées et sorties de stock**.
@@ -361,7 +361,7 @@ Interface graphique Swing pour enregistrer les **entrées et sorties de stock**.
 - `ProduitDAO`, `MouvementDAO`
 
 # Classe FenetreStatistiques
-
+```
 package ui;
 
 import DAO.ProduitDAO;
@@ -412,7 +412,7 @@ public class FenetreStatistiques extends JFrame {
         setVisible(true);
     }
 }
-
+```
 # Explication de la classe FenetreStatistiques
 Cette classe affiche les **statistiques globales** des produits en stock dans une interface Swing.
 
